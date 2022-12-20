@@ -31,15 +31,13 @@ The request sent to your Home URL includes X-Zoom-App-Context header which is an
 
 			<!--- ivlength is 1st byte --->
 			<cfset ivLengthBin = javacast('byte[]',arraySlice(b64,1,ivByteLen))>
-			<cfset ivLength = createObject("Java", "java.io.ByteArrayInputStream").init(ivLengthBin)>
-			<cfset ivLength = ivLength.read()>
+			<cfset ivLength = createObject("Java", "java.io.ByteArrayInputStream").init(ivLengthBin).read()>
 			<cfset ivIdx = 2><!--- Start at 2...one byte after length --->
 			<cfset iv = javacast('byte[]',arraySlice(b64,ivIdx,ivLength))>
 		
 			<cfset aadLenIdx = ivLength + ivIdx>
 			<cfset aadLengthBin = javacast('byte[]',arraySlice(b64,aadLenIdx,aadByteLen))>
-			<cfset aadLength = createObject("Java", "java.io.ByteArrayInputStream").init(aadLengthBin)>
-			<cfset aadLength = aadLength.read()>
+			<cfset aadLength = createObject("Java", "java.io.ByteArrayInputStream").init(aadLengthBin).read()>
 			<cfif isNumeric(aadLength) AND aadLength GT 0>
 				<cfset aadIdx = aadLenIdx + aadByteLen>
 				<cfset aad = javacast('byte[]',arraySlice(b64,aadIdx,aadLength))>
@@ -47,8 +45,7 @@ The request sent to your Home URL includes X-Zoom-App-Context header which is an
 
 			<cfset encryptLengthIdx = aadLenIdx + aadByteLen + aadLength>
 			<cfset encryptLengthbin = javacast('byte[]',arraySlice(b64,encryptLengthIdx,encryptByteLen))>
-			<cfset encryptLength = createObject("Java", "java.io.ByteArrayInputStream").init(encryptLengthbin)>
-			<cfset encryptLength = encryptLength.read()>
+			<cfset encryptLength = createObject("Java", "java.io.ByteArrayInputStream").init(encryptLengthbin).read()>
 			<cfset encrypt1Idx = encryptLengthIdx + encryptByteLen>
 			<cfset encrypt1 = javacast('byte[]',arraySlice(b64,encrypt1Idx,encryptLength+16))>
 
