@@ -21,7 +21,6 @@ The request sent to your Home URL includes X-Zoom-App-Context header which is an
 			<cfset ivByteLen = 1>
 			<cfset aadByteLen = 2>
 			<cfset encryptByteLen = 4>
-			<cfset tagByteLen = 16>
 
 			<cfset contextByte = JavaCast("string", context).getBytes()>
 			<cfset plainKey = JavaCast("string", (isDefined('arguments.cSecret')?arguments.cSecret:clientSecret)).getBytes()>
