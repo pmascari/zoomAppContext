@@ -11,25 +11,23 @@ The request sent to your Home URL includes X-Zoom-App-Context header which is an
 	<cfargument name="cSecret" required="no">
 
 	<cfset var ret = {error="NONE",user={}}>
-
-	<cfset data = "">
-
+	
 	<cftry>
 
 		<cfif isDefined("arguments.encryptedHdr") AND len(arguments.encryptedHdr)>
 
 			<cfset context = arguments.encryptedHdr>
 
+			<cfset ivByteLen = 1>
+			<cfset aadByteLen = 2>
+			<cfset encryptByteLen = 4>
+			<cfset tagByteLen = 16>
+
 			<cfset contextByte = JavaCast("string", context).getBytes()>
 			<cfset plainKey = JavaCast("string", (isDefined('arguments.cSecret')?arguments.cSecret:clientSecret)).getBytes()>
 
 			<cfset b64 = createObject("Java", "org.apache.commons.codec.binary.Base64").init().decodeBase64(contextByte)>
 			<cfset plainKey = createObject("Java", "org.apache.commons.codec.digest.DigestUtils").sha256(plainKey)>
-
-			<cfset ivByteLen = 1>
-			<cfset aadByteLen = 2>
-			<cfset encryptByteLen = 4>
-			<cfset tagByteLen = 16>
 
 			<!--- ivlength is 1st byte --->
 			<cfset ivLengthBin = javacast('byte[]',arraySlice(b64,1,ivByteLen))>
@@ -66,7 +64,6 @@ The request sent to your Home URL includes X-Zoom-App-Context header which is an
 				<cfset cipher.updateAAD(aad)>
 			</cfif>
 
-			
 			<cfset finalDecrypt = cipher.doFinal(encrypt1)>
 
 			<cfset plainContext = createObject("Java", "java.lang.String").init(finalDecrypt)>
